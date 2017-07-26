@@ -37,6 +37,7 @@ class Voltage_Measurement:
         self.T = T
         self.Ai = 1e16
         self.Fs = 1e20
+        self.R = 0.
         self.binn = binn
         self.bkgnd_corr = bkgnd_corr
         self.bkgnd_loc = bkgnd_loc
@@ -147,11 +148,12 @@ class Voltage_Measurement:
     def dndt(self, n, t):
         return np.gradient(n, t, edge_order=2)
 
-    def gen_av(self):
+    def gen_av(self, ):
         ref = self.data()['ref']
-        return self.Fs * ref
+        return self.Fs * ref * (1 - self.R) / self.W
 
-    def gen_net(self, dndt):
+    def gen_net(self, dndt, suns=True):
+
         return self.gen_av() - dndt
 
     def V_T(self):
